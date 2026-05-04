@@ -31,8 +31,8 @@
     <script type="text/babel">
         const { useState } = React;
 
-        // --- חשוב: עדכני כאן את הקישור החדש שתקבלי מגוגל אחרי השינוי ל-"Anyone" ---
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpKmaYpRtofnY1DOecm4jAYwVsq6h7XB4wAmvrpog9XbkZTfbl6gz897IjlZy_fwY/exec";
+        // --- הקישור המעודכן שלך מגוגל מוטמע כאן ---
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVk-QIxM-d6r3cGuvxo41g_y85fXzTr_INkdKZEdUzfMG6aqPPHhuU7XNFigUDb8VC/exec";
 
         function App() {
             const [step, setStep] = useState(0);
@@ -92,7 +92,7 @@
                     <div className="min-h-screen flex items-center justify-center p-6 text-right fade-in" dir="rtl">
                         <div className="max-w-4xl w-full text-center space-y-12">
                             <div className="text-[10rem]">✅</div>
-                            <h2 className="text-7xl font-black">תודה רבה!</h2>
+                            <h2 className="text-7xl font-black text-[#070543]">תודה רבה!</h2>
                             <div className="bg-slate-50 p-12 rounded-[3rem] border-r-[20px] border-[#070543] text-right shadow-inner">
                                 <p className="text-4xl font-bold mb-6">הפרטים והמסמכים התקבלו בהצלחה.</p>
                                 <p className="text-2xl text-gray-600 font-medium">צוות תוכנית החומש יעבור על המידע ויחזור אליך במידת הצורך בכתובת המייל שצוינה.</p>
@@ -114,7 +114,7 @@
                     <main className="max-w-5xl mx-auto bg-white border-2 border-gray-100 rounded-[2.5rem] shadow-2xl p-8 md:p-16">
                         {step === 0 && (
                             <div className="space-y-12">
-                                <div className="text-3xl leading-relaxed space-y-8">
+                                <div className="text-3xl leading-relaxed space-y-8 text-right">
                                     <p className="font-bold text-4xl">שותפים יקרים,</p>
                                     <p>לקראת הגשת תוכנית העבודה לשנה"ל תשפ"ז, אנו נדרשים לאסוף את כל המידע הנדרש.</p>
                                     <p>לפניכם כלי לאיסוף מידע כולל הסבר על המסמכים הנדרשים לצורך בחינת התוכניות ואישורן ותבנית אחידה להגשתם:</p>
@@ -134,7 +134,7 @@
                                         ].map(item => (
                                             <button key={item.id} onClick={() => setActiveModal(item.id)} className="flex flex-col items-center gap-6 p-10 border thin-border border-[#070543] rounded-2xl hover:bg-slate-50 transition-all w-full max-w-[280px] shadow-sm">
                                                 <span className="text-7xl">{item.icon}</span>
-                                                <span className="text-2xl font-normal text-center">{item.label}</span>
+                                                <span className="text-2xl font-normal text-center leading-tight">{item.label}</span>
                                             </button>
                                         ))}
                                     </div>
@@ -148,7 +148,7 @@
                         {step === 1 && (
                             <div className="space-y-12">
                                 <h2 className="text-5xl font-black border-b-8 border-[#070543] pb-6">חלק ראשון: פרטי זהות</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 text-2xl">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 text-2xl text-right">
                                     <div className="flex flex-col gap-4">
                                         <label className="font-bold">שם ממלא הטופס:</label>
                                         <input type="text" onChange={e => setFormData({...formData, senderName: e.target.value})} className="p-6 border-2 border-[#070543] rounded-2xl outline-none focus:ring-8 focus:ring-blue-50" placeholder="שם מלא" />
@@ -176,11 +176,11 @@
                         {step === 2 && (
                             <div className="space-y-12">
                                 <h2 className="text-5xl font-black border-b-8 border-[#070543] pb-6">חלק שני: העלאת מסמכים</h2>
-                                <div className="bg-slate-50 p-12 rounded-[3rem] space-y-8 border thin-border border-gray-200">
+                                <div className="bg-slate-50 p-12 rounded-[3rem] space-y-8 border thin-border border-gray-200 text-right">
                                     <h3 className="text-4xl font-bold text-navy">1. אודות התוכנית (Word)</h3>
                                     <input type="file" multiple onChange={e => setInfoFiles(e.target.files)} className="w-full p-6 bg-white border-2 border-[#070543] rounded-2xl text-xl" />
                                 </div>
-                                <div className="bg-slate-50 p-12 rounded-[3rem] space-y-8 border thin-border border-gray-200">
+                                <div className="bg-slate-50 p-12 rounded-[3rem] space-y-8 border thin-border border-gray-200 text-right">
                                     <h3 className="text-4xl font-bold text-navy">2. פירוט עלויות (Word)</h3>
                                     <input type="file" multiple onChange={e => setCostFiles(e.target.files)} className="w-full p-6 bg-white border-2 border-[#070543] rounded-2xl text-xl" />
                                 </div>
@@ -193,10 +193,15 @@
                         )}
                     </main>
 
+                    <footer className="mt-40 text-gray-300 text-2xl flex flex-col items-center gap-10 pb-32">
+                        <div className="w-20 h-1 bg-gray-100 rounded-full mb-4"></div>
+                        <p>© 2026 מחוז העיר ירושלים - משרד החינוך</p>
+                    </footer>
+
                     {activeModal && (
                         <div className="fixed inset-0 bg-navy/90 flex items-center justify-center p-6 z-[200] backdrop-blur-md" onClick={() => setActiveModal(null)}>
                             <div className="bg-white p-16 rounded-[4rem] max-w-3xl w-full text-right shadow-2xl relative border-8 border-white/20" onClick={e => e.stopPropagation()}>
-                                <button onClick={() => setActiveModal(null)} className="absolute top-8 left-8 text-8xl font-light">×</button>
+                                <button onClick={() => setActiveModal(null)} className="absolute top-8 left-8 text-8xl font-light hover:rotate-90 transition-transform">×</button>
                                 <h2 className="text-5xl font-black mb-10 border-b-4 pb-4 border-[#070543]">הסבר על המסמך</h2>
                                 <p className="text-3xl leading-relaxed mb-12 font-medium">אנא הורדו את התבנית, מלאו אותה והעלו בשלב הבא של הטופס.</p>
                                 <div className="space-y-6">
