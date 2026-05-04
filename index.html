@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פורטל איסוף נתונים - תוכנית החומש</title>
+    
+    <!-- Scripts for React, ReactDOM and Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Assistant -->
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { font-family: 'Assistant', sans-serif !important; }
+        .bg-magenta\/5 { background-color: rgba(217, 70, 239, 0.05); }
+        .border-magenta\/20 { border-color: rgba(217, 70, 239, 0.2); }
+        .thin-border { border-width: 1px !important; }
+        
+        /* Smooth transitions for a premium feel */
+        .fade-enter { opacity: 0; transform: translateY(10px); }
+        .fade-enter-active { opacity: 1; transform: translateY(0); transition: all 500ms ease-out; }
+    </style>
+</head>
+<body class="bg-white text-[#070543]">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // --- הקישור המחובר ל-Google Script שלך ---
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpKmaYpRtofnY1DOecm4jAYwVsq6h7XB4wAmvrpog9XbkZTfbl6gz897IjlZy_fwY/exec";
+
+        function App() {
+            const [step, setStep] = useState(0);
+            const [isSubmitting, setIsSubmitting] = useState(false);
+            const [activeModal, setActiveModal] = useState(null);
+
+            const [formData, setFormData] = useState({
+                senderName: '', senderEmail: '', programName: '', supplierName: '',
+                channel: '', contactName: '', contactPhone: '', contactEmail: ''
+            });
+
+            const [infoFiles, setInfoFiles] = useState([null]);
+            const [costFiles, setCostFiles] = useState([null]);
+
+            const fileToBase64 = (file) => new Promise((resolve) => {
+                if (!file) return resolve(null);
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve({
+                    name: file.name,
+                    mimeType: file.type,
+                    data: reader.result.split(',')[1]
+                });
+            });
+
+            const handleSubmit = async () => {
+                if (!formData.senderName || !formData.programName) {
+                    alert("נא למלא את כל שדות החובה.");
+                    return;
+                }
+                setIsSubmitting(true);
+                try {
+                    const infoPayload = await Promise.all(infoFiles.filter(f => f).map(fileToBase64));
+                    const costPayload = await Promise.all(costFiles.filter(f => f).map(fileToBase64));
+                    
+                    const payload = {
+                        ...formData,
+                        date: new Date().toLocaleString('he-IL'),
+                        infoFiles: infoPayload,
+                        costFiles: costPayload
+                    };
+
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: JSON.stringify(payload)
+                    });
+                    setStep(3);
+                } catch (e) {
+                    alert("חלה שגיאה בשליחה. נא לוודא חיבור אינטרנט תקין ולנסות שוב.");
+                } finally {
+                    setIsSubmitting(false);
+                }
+            };
+
+            const nextStep = (s) => { 
+                setStep(s); 
+                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            };
+
+            // Success Step
+            if (step === 3) {
+                return (
+                    <div className="min-h-screen bg-white text-[#070543] p-6 md:p-16 text-right" dir="rtl">
+                        <div className="max-w-5xl mx-auto text-center space-y-20 py-24">
+                            <div className="text-[14rem] animate-bounce">✅</div>
+                            <h2 className="text-8xl font-black">תודה רבה!</h2>
+                            <div className="text-right space-y-14 max-w-5xl mx-auto bg-slate-50 p-20 rounded-[4rem] shadow-inner border-r-[32px] border-[#070543]">
+                                <p className="text-5xl font-bold">הפרטים והמסמכים שמילאת התקבלו אצלנו בהצלחה.</p>
+                                <p className="text-4xl leading-relaxed text-gray-700 font-medium">צוות תוכנית החומש יעבור על המידע ויחזור אליך במידת הצורך בכתובת המייל שצוינה.</p>
+                            </div>
+                            <button onClick={() => location.reload()} className="text-4xl font-black underline text-blue-800 hover:text-[#070543] transition-colors">חזרה לעמוד הראשי</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen bg-white text-[#070543] p-6 md:p-16 text-right" dir="rtl">
+                    <header className="max-w-5xl mx-auto flex flex-col items-center mb-16">
+                        <img src="לוגו שקוף מחוז.png" className="w-[480px] h-auto mb-10 object-contain" alt="לוגו מחוז ירושלים" />
+                        <h1 className="text-6xl font-black mb-4 text-center tracking-tight">תוכנית החומש לחינוך במזרח ירושלים</h1>
+                        <p className="text-4xl text-gray-500 font-bold text-center italic">תוכניות חינוכיות ומענים - איסוף מידע ומסמכים</p>
+                    </header>
+
+                    <main className="max-w-5xl mx-auto bg-white border-2 border-gray-100 rounded-[3rem] shadow-2xl p-10 md:p-24 relative overflow-hidden">
+                        {step === 0 && (
+                            <div className="space-y-12 fade-enter-active">
+                                <div className="space-y-10 text-3xl leading-relaxed">
+                                    <p className="font-bold text-4xl text-navy">שותפים יקרים,</p>
+                                    <p>לקראת הגשת תוכנית העבודה של החומש לשנה"ל תשפ"ז אנו נדרשים להעביר למטה משרד החינוך את כל המידע על תוכנית החומש שיופעלו בשנה הבאה; התוכן, פירוט עלויות (ובהמשך גם תוכנית שנתית).</p>
+                                    <p>לפניכם כלי לאיסוף מידע כולל הסבר על המסמכים הנדרשים לצורך בחינת התוכניות ואישורן ותבנית אחידה להגשתם:</p>
+                                    <ul className="list-disc list-inside pr-10 space-y-6 font-medium">
+                                        <li>הורידו את התבניות ומלאו בתוכן הרלוונטי לכל תוכנית.</li>
+                                        <li>בלחיצה על "המשך" מלאו את הפרטים הנדרשים והעלו את המסמכים המלאים.</li>
+                                        <li>אנא הקפידו למלא את כל הסעיפים הנדרשים עפ"י ההנחיות.</li>
+                                    </ul>
+                                </div>
+                                
+                                <div className="bg-magenta/5 border-y-4 border-[#d946ef]/20 p-8 rounded-2xl my-12">
+                                    <p className="text-3xl font-medium text-[#d946ef] text-center leading-tight">
+                                        יש למלא את הטופס כולל העלאת המסמכים <br /> 
+                                        עד לתאריך 12.5.26.
+                                    </p>
+                                </div>
+
+                                <div className="space-y-12">
+                                    <div className="w-full text-center">
+                                        <h3 className="text-4xl font-bold pb-3">להלן הסבר על המסמכים הנדרשים:</h3>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
+                                        {[
+                                            { id: 'info', icon: '📝', label: 'דף מידע על תוכנית' },
+                                            { id: 'costs', icon: '₪', label: 'מסמך פירוט עלויות' },
+                                            { id: 'yearly', icon: '📅', label: 'תוכנית עבודה שנתית' }
+                                        ].map(item => (
+                                            <button 
+                                                key={item.id}
+                                                onClick={() => setActiveModal(item.id)} 
+                                                className="flex flex-col items-center gap-4 p-8 border thin-border border-[#070543] rounded-2xl hover:bg-slate-50 w-full max-w-[280px] shadow-md transition-all hover:scale-105"
+                                            >
+                                                <span className="text-7xl">{item.icon}</span>
+                                                <span className="text-2xl font-normal text-center leading-tight">{item.label}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="flex justify-center pt-24">
+                                    <button onClick={() => nextStep(1)} className="bg-[#070543] text-white px-40 py-10 rounded-3xl text-5xl font-black hover:scale-105 transition-all shadow-xl shadow-navy/20">המשך למילוי הטופס</button>
+                                </div>
+                            </div>
+                        )}
+
+                        {step === 1 && (
+                            <div className="space-y-14 fade-enter-active">
+                                <h2 className="text-5xl font-black border-b-8 border-[#070543] pb-6">חלק ראשון: פרטי זהות</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-2xl">
+                                    <div className="space-y-4">
+                                        <label className="block font-bold">שם ממלא הטופס:</label>
+                                        <input type="text" value={formData.senderName} onChange={e => setFormData({...formData, senderName: e.target.value})} className="w-full p-6 border-2 border-[#070543] rounded-2xl focus:ring-8 focus:ring-blue-50 outline-none" placeholder="שם מלא" />
+                                    </div>
+                                    <div className="space-y-4">
+                                        <label className="block font-bold">מייל:</label>
+                                        <input type="email" value={formData.senderEmail} onChange={e => setFormData({...formData, senderEmail: e.target.value})} className="w-full p-6 border-2 border-[#070543] rounded-2xl focus:ring-8 focus:ring-blue-50 outline-none" placeholder="example@email.com" />
+                                    </div>
+                                    <div className="space-y-4">
+                                        <label className="block font-bold">שם התוכנית:</label>
+                                        <input type="text" value={formData.programName} onChange={e => setFormData({...formData, programName: e.target.value})} className="w-full p-6 border-2 border-[#070543] rounded-2xl focus:ring-8 focus:ring-blue-50 outline-none" placeholder="כפי שמופיע באפיון" />
+                                    </div>
+                                    <div className="space-y-4">
+                                        <label className="block font-bold">שם הספק:</label>
+                                        <input type="text" value={formData.supplierName} onChange={e => setFormData({...formData, supplierName: e.target.value})} className="w-full p-6 border-2 border-[#070543] rounded-2xl focus:ring-8 focus:ring-blue-50 outline-none" placeholder="שם הארגון / החברה" />
+                                    </div>
+                                </div>
+                                <div className="flex justify-between pt-24">
+                                    <button onClick={() => nextStep(0)} className="text-4xl underline font-bold hover:text-blue-800 transition-colors">חזרה</button>
+                                    <button onClick={() => nextStep(2)} className="bg-[#070543] text-white px-24 py-8 rounded-[2rem] text-4xl font-black shadow-lg">המשך להעלאת מסמכים</button>
+                                </div>
+                            </div>
+                        )}
+
+                        {step === 2 && (
+                            <div className="space-y-20 fade-enter-active">
+                                <h2 className="text-6xl font-black border-b-8 border-[#070543] pb-6">חלק שני: העלאת מסמכים</h2>
+                                <div className="p-20 bg-slate-50 rounded-[3rem] space-y-10 border-4 border-[#070543]/10 text-3xl">
+                                    <h3 className="text-5xl font-bold text-navy">1. אודות התוכנית (Word)</h3>
+                                    <p className="text-2xl text-gray-500 -mt-6">ניתן להעלות מספר קבצים</p>
+                                    <input type="file" multiple onChange={e => setInfoFiles(Array.from(e.target.files))} className="w-full p-8 bg-white border-4 border-[#070543] rounded-2xl file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-navy file:text-white hover:file:bg-black cursor-pointer" />
+                                </div>
+                                <div className="p-20 bg-slate-50 rounded-[3rem] space-y-10 border-4 border-[#070543]/10 text-3xl">
+                                    <h3 className="text-5xl font-bold text-navy">2. פירוט עלויות (Word)</h3>
+                                    <p className="text-2xl text-gray-500 -mt-6">אנא וודאו שמילאתם את כל העלויות לפי התעריפים</p>
+                                    <input type="file" multiple onChange={e => setCostFiles(Array.from(e.target.files))} className="w-full p-8 bg-white border-4 border-[#070543] rounded-2xl file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-navy file:text-white hover:file:bg-black cursor-pointer" />
+                                </div>
+                                <div className="flex flex-col items-center gap-10 pt-24">
+                                    <button onClick={handleSubmit} disabled={isSubmitting} className="bg-[#070543] text-white px-40 py-10 rounded-[2rem] text-5xl font-black shadow-2xl disabled:bg-gray-400 hover:scale-105 transition-all w-full max-w-2xl">
+                                        {isSubmitting ? "שולח נתונים..." : "שלח הגשה סופית"}
+                                    </button>
+                                    <button onClick={() => nextStep(1)} className="text-3xl underline font-bold text-gray-500 hover:text-navy">חזרה לפרטי זהות</button>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    <footer className="mt-40 text-gray-300 text-2xl flex flex-col items-center gap-10 pb-32">
+                        <div className="w-20 h-1 bg-gray-100 rounded-full mb-4"></div>
+                        <p>© 2026 מחוז העיר ירושלים - משרד החינוך</p>
+                    </footer>
+
+                    {/* Modals for Downloads */}
+                    {activeModal && (
+                        <div className="fixed inset-0 bg-navy/95 flex items-center justify-center p-12 z-[200] backdrop-blur-md" onClick={() => setActiveModal(null)}>
+                            <div className="bg-white p-24 rounded-[5rem] max-w-6xl w-full text-right shadow-2xl relative border-8 border-white/20" onClick={e => e.stopPropagation()}>
+                                <button onClick={() => setActiveModal(null)} className="absolute top-12 left-12 text-8xl font-light hover:rotate-90 transition-transform">×</button>
+                                <h2 className="text-6xl font-black border-b-8 pb-6 border-[#070543] mb-12">הסבר על המסמך</h2>
+                                <p className="text-4xl leading-relaxed mb-12 font-medium">אנא הורדו את התבנית המתאימה, מלאו אותה והעלו בשלב הבא של הטופס.</p>
+                                
+                                <div className="space-y-6">
+                                    {activeModal === 'info' && (
+                                        <a href="template_info.docx" download className="block bg-[#070543] text-white w-full py-12 rounded-[2rem] text-5xl font-black text-center shadow-xl hover:bg-black transition-all">📥 הורד תבנית דף מידע (Word)</a>
+                                    )}
+                                    {activeModal === 'costs' && (
+                                        <a href="template_costs.docx" download className="block bg-[#070543] text-white w-full py-12 rounded-[2rem] text-5xl font-black text-center shadow-xl hover:bg-black transition-all">📥 הורד תבנית עלויות (Word)</a>
+                                    )}
+                                    {activeModal === 'yearly' && (
+                                        <div className="p-10 border-4 border-dashed border-[#d946ef]/30 rounded-3xl bg-[#d946ef]/5 text-center">
+                                            <p className="text-4xl font-bold text-[#d946ef]">📅 תבנית תפורסם בהמשך</p>
+                                            <p className="text-2xl mt-4 text-[#d946ef]/80 italic">ניתן לדלג על העלאת קובץ זה בשלב הנוכחי.</p>
+                                        </div>
+                                    )}
+                                    <button onClick={() => setActiveModal(null)} className="w-full text-3xl font-bold text-gray-400 mt-10 hover:text-navy underline">סגור חלון</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
