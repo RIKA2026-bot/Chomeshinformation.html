@@ -21,6 +21,9 @@
         .border-magenta-soft { border-color: rgba(217, 70, 239, 0.2); }
         .thin-border { border-width: 1px !important; }
         
+        /* הסרת קו תחתון גלובלית מכל הכותרות והאלמנטים הטקסטואליים */
+        h1, h2, h3, h4, span, p, a, label { text-decoration: none !important; border-bottom: none !important; }
+
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -31,13 +34,19 @@
     <script type="text/babel">
         const { useState } = React;
 
-        // --- הקישור המעודכן שלך מגוגל מוטמע כאן ---
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVk-QIxM-d6r3cGuvxo41g_y85fXzTr_INkdKZEdUzfMG6aqPPHhuU7XNFigUDb8VC/exec";
+        // --- 1. הקישור החדש לפריסה של ה-Google Script ---
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxB2UaIRmr7jdFo-lZPwAjdfsUTABMvc6L93U9GrIoEP3-n2foEKuJMrK4aDtaIHqEw/exec";
+        
+        // --- 2. הקישור הישיר לגוגל שיטס שלך ---
+        const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1dLYWAtJUYO0FtMhTZnjYiEAxlFbKkrbPqq-BuU3FkZk/edit?usp=drivesdk"; 
 
         function App() {
             const [step, setStep] = useState(0);
             const [isSubmitting, setIsSubmitting] = useState(false);
             const [activeModal, setActiveModal] = useState(null);
+            const [showAdminModal, setShowAdminModal] = useState(false);
+            const [adminPassInput, setAdminPassInput] = useState("");
+            const [isLoggedIn, setIsLoggedIn] = useState(false);
 
             const [formData, setFormData] = useState({
                 senderName: '', senderEmail: '', programName: '', supplierName: '',
@@ -56,6 +65,14 @@
                     data: reader.result.split(',')[1]
                 });
             });
+
+            const handleAdminLogin = () => {
+                if (adminPassInput === "1234") {
+                    setIsLoggedIn(true);
+                } else {
+                    alert("סיסמה שגויה");
+                }
+            };
 
             const handleSubmit = async () => {
                 if (!formData.senderName || !formData.programName) {
@@ -91,13 +108,25 @@
                 return (
                     <div className="min-h-screen flex items-center justify-center p-6 text-right fade-in" dir="rtl">
                         <div className="max-w-4xl w-full text-center space-y-12">
-                            <div className="text-[10rem]">✅</div>
-                            <h2 className="text-7xl font-black text-[#070543]">תודה רבה!</h2>
-                            <div className="bg-slate-50 p-12 rounded-[3rem] border-r-[20px] border-[#070543] text-right shadow-inner">
-                                <p className="text-4xl font-bold mb-6">הפרטים והמסמכים התקבלו בהצלחה.</p>
-                                <p className="text-2xl text-gray-600 font-medium">צוות תוכנית החומש יעבור על המידע ויחזור אליך במידת הצורך בכתובת המייל שצוינה.</p>
+                            <div className="text-[10rem] text-center">✅</div>
+                            <h2 className="text-7xl font-black text-[#070543] text-center">תודה רבה!</h2>
+                            <div className="bg-slate-50 p-12 rounded-[3rem] border-r-[20px] border-[#070543] text-right shadow-inner space-y-10">
+                                <p className="text-4xl font-bold text-center">הפרטים והמסמכים שמילאת התקבלו אצלנו בהצלחה.</p>
+                                <p className="text-3xl leading-relaxed text-gray-700 text-center">צוות תוכנית החומש יעבור על המידע ויחזור אליך במידת הצורך בכתובת המייל שציינת.</p>
+                                
+                                <div className="pt-10 space-y-8 border-t-4 border-[#070543]/10">
+                                    <p className="font-bold text-4xl text-[#070543] text-center">לידיעתכם:</p>
+                                    <ul className="space-y-6 text-3xl pr-10 text-right">
+                                        <li className="flex items-start gap-6"><span className="text-[#070543] font-black">›</span> המידע אודות התוכנית יעלה לפורטל תוכניות החומש.</li>
+                                        <li className="flex items-start gap-6"><span className="text-[#070543] font-black">›</span> מסמך העלויות יועבר לאישור מטה משרד החינוך.</li>
+                                        <li className="flex items-start gap-6"><span className="text-[#070543] font-black">›</span> תוכניות העבודה ולוחות הזמנים יועברו לאגף אכיפה ובקרה לצורכי בקרה.</li>
+                                        <li className="flex items-start gap-6"><span className="text-[#070543] font-black">›</span> נוהל העברת עדכוני לו"ז לתוכניות יפורסם לקראת פתיחת שנה"ל תשפ"ז.</li>
+                                    </ul>
+                                </div>
                             </div>
-                            <button onClick={() => location.reload()} className="text-3xl font-bold underline text-blue-700 hover:text-[#070543] transition-colors">חזרה לדף הראשי</button>
+                            <div className="flex justify-center">
+                                <button onClick={() => location.reload()} className="text-3xl font-bold underline text-blue-700 hover:text-navy">חזרה לעמוד הראשי</button>
+                            </div>
                         </div>
                     </div>
                 );
@@ -105,19 +134,19 @@
 
             return (
                 <div className="min-h-screen p-6 md:p-12 fade-in" dir="rtl">
-                    <header className="flex flex-col items-center mb-12">
+                    <header className="flex flex-col items-center mb-16">
                         <img src="לוגו שקוף מחוז.png" className="w-[400px] mb-8" alt="לוגו" />
                         <h1 className="text-6xl font-black text-center mb-2 tracking-tight">תוכנית החומש לחינוך במזרח ירושלים</h1>
-                        <p className="text-4xl text-gray-500 font-bold italic">איסוף מידע ומסמכים - תשפ"ז</p>
+                        <p className="text-4xl text-gray-500 font-bold italic text-center">איסוף מידע ומסמכים - תשפ"ז</p>
                     </header>
 
                     <main className="max-w-5xl mx-auto bg-white border-2 border-gray-100 rounded-[2.5rem] shadow-2xl p-8 md:p-16">
                         {step === 0 && (
                             <div className="space-y-12">
-                                <div className="text-3xl leading-relaxed space-y-8 text-right">
-                                    <p className="font-bold text-4xl">שותפים יקרים,</p>
-                                    <p>לקראת הגשת תוכנית העבודה לשנה"ל תשפ"ז, אנו נדרשים לאסוף את כל המידע הנדרש.</p>
-                                    <p>לפניכם כלי לאיסוף מידע כולל הסבר על המסמכים הנדרשים לצורך בחינת התוכניות ואישורן ותבנית אחידה להגשתם:</p>
+                                <div className="text-3xl leading-relaxed space-y-8">
+                                    <p className="font-bold text-4xl text-center">שותפים יקרים,</p>
+                                    <p className="text-center">לקראת הגשת תוכנית העבודה לשנה"ל תשפ"ז, אנו נדרשים לאסוף את כל המידע הנדרש.</p>
+                                    <p className="text-center">לפניכם כלי לאיסוף מידע כולל הסבר על המסמכים הנדרשים לצורך בחינת התוכניות ואישורן ותבנית אחידה להגשתם:</p>
                                 </div>
 
                                 <div className="bg-magenta-soft border-y-4 border-magenta-soft/30 p-10 rounded-2xl text-center">
@@ -139,7 +168,7 @@
                                         ))}
                                     </div>
                                 </div>
-                                <div className="flex justify-center pt-16">
+                                <div className="flex justify-center pt-24">
                                     <button onClick={() => setStep(1)} className="bg-[#070543] text-white px-32 py-8 rounded-2xl text-5xl font-black shadow-2xl hover:scale-105 transition-transform">המשך למילוי הטופס</button>
                                 </div>
                             </div>
@@ -147,26 +176,26 @@
 
                         {step === 1 && (
                             <div className="space-y-12">
-                                <h2 className="text-5xl font-black border-b-8 border-[#070543] pb-6">חלק ראשון: פרטי זהות</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 text-2xl text-right">
+                                <h2 className="text-5xl font-black text-center">חלק ראשון: פרטי זהות</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 text-2xl">
                                     <div className="flex flex-col gap-4">
-                                        <label className="font-bold">שם ממלא הטופס:</label>
-                                        <input type="text" onChange={e => setFormData({...formData, senderName: e.target.value})} className="p-6 border-2 border-[#070543] rounded-2xl outline-none focus:ring-8 focus:ring-blue-50" placeholder="שם מלא" />
+                                        <label className="font-bold text-center text-[#070543]">שם ממלא הטופס:</label>
+                                        <input type="text" onChange={e => setFormData({...formData, senderName: e.target.value})} className="p-6 border-2 border-[#070543] rounded-2xl outline-none text-center" placeholder="שם מלא" />
                                     </div>
                                     <div className="flex flex-col gap-4">
-                                        <label className="font-bold">מייל:</label>
-                                        <input type="email" onChange={e => setFormData({...formData, senderEmail: e.target.value})} className="p-6 border-2 border-[#070543] rounded-2xl outline-none focus:ring-8 focus:ring-blue-50" placeholder="example@email.com" />
+                                        <label className="font-bold text-center text-[#070543]">מייל:</label>
+                                        <input type="email" onChange={e => setFormData({...formData, senderEmail: e.target.value})} className="p-6 border-2 border-[#070543] rounded-2xl outline-none text-center" placeholder="example@email.com" />
                                     </div>
                                     <div className="flex flex-col gap-4">
-                                        <label className="font-bold">שם התוכנית:</label>
-                                        <input type="text" onChange={e => setFormData({...formData, programName: e.target.value})} className="p-6 border-2 border-[#070543] rounded-2xl outline-none focus:ring-8 focus:ring-blue-50" />
+                                        <label className="font-bold text-center text-[#070543]">שם התוכנית:</label>
+                                        <input type="text" onChange={e => setFormData({...formData, programName: e.target.value})} className="p-6 border-2 border-[#070543] rounded-2xl outline-none text-center" />
                                     </div>
                                     <div className="flex flex-col gap-4">
-                                        <label className="font-bold">שם הספק:</label>
-                                        <input type="text" onChange={e => setFormData({...formData, supplierName: e.target.value})} className="p-6 border-2 border-[#070543] rounded-2xl outline-none focus:ring-8 focus:ring-blue-50" />
+                                        <label className="font-bold text-center text-[#070543]">שם הספק:</label>
+                                        <input type="text" onChange={e => setFormData({...formData, supplierName: e.target.value})} className="p-6 border-2 border-[#070543] rounded-2xl outline-none text-center" />
                                     </div>
                                 </div>
-                                <div className="flex justify-between pt-12">
+                                <div className="flex justify-between pt-12 items-center">
                                     <button onClick={() => setStep(0)} className="text-3xl font-bold underline">חזרה</button>
                                     <button onClick={() => setStep(2)} className="bg-[#070543] text-white px-16 py-6 rounded-2xl text-3xl font-black shadow-xl">הבא להעלאת מסמכים</button>
                                 </div>
@@ -174,18 +203,18 @@
                         )}
 
                         {step === 2 && (
-                            <div className="space-y-12">
-                                <h2 className="text-5xl font-black border-b-8 border-[#070543] pb-6">חלק שני: העלאת מסמכים</h2>
-                                <div className="bg-slate-50 p-12 rounded-[3rem] space-y-8 border thin-border border-gray-200 text-right">
-                                    <h3 className="text-4xl font-bold text-navy">1. אודות התוכנית (Word)</h3>
-                                    <input type="file" multiple onChange={e => setInfoFiles(e.target.files)} className="w-full p-6 bg-white border-2 border-[#070543] rounded-2xl text-xl" />
+                            <div className="space-y-12 text-center">
+                                <h2 className="text-5xl font-black text-center">חלק שני: העלאת מסמכים</h2>
+                                <div className="bg-slate-50 p-12 rounded-[3rem] space-y-8 border thin-border border-gray-200">
+                                    <h3 className="text-4xl font-bold text-navy text-center">1. אודות התוכנית (Word)</h3>
+                                    <input type="file" multiple onChange={e => setInfoFiles(e.target.files)} className="w-full p-6 bg-white border-2 border-[#070543] rounded-2xl text-center" />
                                 </div>
-                                <div className="bg-slate-50 p-12 rounded-[3rem] space-y-8 border thin-border border-gray-200 text-right">
-                                    <h3 className="text-4xl font-bold text-navy">2. פירוט עלויות (Word)</h3>
-                                    <input type="file" multiple onChange={e => setCostFiles(e.target.files)} className="w-full p-6 bg-white border-2 border-[#070543] rounded-2xl text-xl" />
+                                <div className="bg-slate-50 p-12 rounded-[3rem] space-y-8 border thin-border border-gray-200">
+                                    <h3 className="text-4xl font-bold text-navy text-center">2. פירוט עלויות (Word)</h3>
+                                    <input type="file" multiple onChange={e => setCostFiles(e.target.files)} className="w-full p-6 bg-white border-2 border-[#070543] rounded-2xl text-center" />
                                 </div>
-                                <div className="flex justify-center pt-12">
-                                    <button onClick={handleSubmit} disabled={isSubmitting} className="bg-[#070543] text-white px-32 py-10 rounded-3xl text-5xl font-black shadow-2xl disabled:bg-gray-400">
+                                <div className="flex justify-center pt-20">
+                                    <button onClick={handleSubmit} disabled={isSubmitting} className="bg-[#070543] text-white px-32 py-10 rounded-3xl text-5xl font-black shadow-2xl disabled:bg-gray-400 transition-all">
                                         {isSubmitting ? "שולח נתונים..." : "שלח הגשה סופית"}
                                     </button>
                                 </div>
@@ -193,27 +222,71 @@
                         )}
                     </main>
 
-                    <footer className="mt-40 text-gray-300 text-2xl flex flex-col items-center gap-10 pb-32">
-                        <div className="w-20 h-1 bg-gray-100 rounded-full mb-4"></div>
-                        <p>© 2026 מחוז העיר ירושלים - משרד החינוך</p>
-                    </footer>
-
                     {activeModal && (
                         <div className="fixed inset-0 bg-navy/90 flex items-center justify-center p-6 z-[200] backdrop-blur-md" onClick={() => setActiveModal(null)}>
                             <div className="bg-white p-16 rounded-[4rem] max-w-3xl w-full text-right shadow-2xl relative border-8 border-white/20" onClick={e => e.stopPropagation()}>
                                 <button onClick={() => setActiveModal(null)} className="absolute top-8 left-8 text-8xl font-light hover:rotate-90 transition-transform">×</button>
-                                <h2 className="text-5xl font-black mb-10 border-b-4 pb-4 border-[#070543]">הסבר על המסמך</h2>
-                                <p className="text-3xl leading-relaxed mb-12 font-medium">אנא הורדו את התבנית, מלאו אותה והעלו בשלב הבא של הטופס.</p>
-                                <div className="space-y-6">
-                                    {activeModal === 'info' && <a href="template_info.docx" download className="block bg-[#070543] text-white text-center py-10 rounded-3xl text-4xl font-black shadow-xl hover:bg-black transition-all">📥 הורד תבנית דף מידע</a>}
-                                    {activeModal === 'costs' && <a href="template_costs.docx" download className="block bg-[#070543] text-white text-center py-10 rounded-3xl text-4xl font-black shadow-xl hover:bg-black transition-all">📥 הורד תבנית עלויות</a>}
+                                <h2 className="text-5xl font-black mb-10 text-center">הסבר על המסמך</h2>
+                                <p className="text-3xl leading-relaxed mb-12 font-medium text-center">אנא הורדו את התבנית, מלאו אותה והעלו בשלב הבא של הטופס.</p>
+                                <div className="space-y-6 flex flex-col items-center">
+                                    {activeModal === 'info' && <a href="template_info.docx" download className="block bg-[#070543] text-white text-center py-10 rounded-3xl text-4xl font-black shadow-xl hover:bg-black transition-all w-full">📥 הורד תבנית דף מידע</a>}
+                                    {activeModal === 'costs' && <a href="template_costs.docs.docx" download className="block bg-[#070543] text-white text-center py-10 rounded-3xl text-4xl font-black shadow-xl hover:bg-black transition-all w-full">📥 הורד תבנית עלויות</a>}
                                     {activeModal === 'yearly' && (
-                                        <div className="p-10 border-4 border-dashed border-[#d946ef]/30 rounded-3xl bg-[#d946ef]/5 text-center">
+                                        <div className="p-10 border-4 border-dashed border-[#d946ef]/30 rounded-3xl bg-[#d946ef]/5 text-center w-full">
                                             <p className="text-3xl font-bold text-[#d946ef]">תבנית תפורסם בהמשך</p>
                                         </div>
                                     )}
-                                    <button onClick={() => setActiveModal(null)} className="w-full text-2xl font-bold text-gray-400 mt-8 underline">סגור חלון</button>
+                                    <button onClick={() => setActiveModal(null)} className="text-2xl font-bold text-gray-400 mt-8 underline text-center block">סגור חלון</button>
                                 </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <footer className="mt-40 text-gray-300 text-2xl flex flex-col items-center gap-10 pb-32">
+                        <div className="w-20 h-1 bg-gray-100 rounded-full mb-4"></div>
+                        <p className="text-center">© 2026 מחוז העיר ירושלים - משרד החינוך</p>
+                        <button 
+                            onClick={() => setShowAdminModal(true)} 
+                            className="opacity-20 hover:opacity-100 transition-opacity p-4 font-mono text-sm border border-gray-200 rounded-full text-gray-400"
+                        >
+                            ADMIN PORTAL
+                        </button>
+                    </footer>
+
+                    {/* Admin Login Modal */}
+                    {showAdminModal && (
+                        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-8 z-[300] backdrop-blur-sm" onClick={() => {setShowAdminModal(false); setIsLoggedIn(false); setAdminPassInput("");}}>
+                            <div className="bg-white p-12 rounded-3xl max-w-md w-full text-right shadow-2xl border-4 border-[#070543]" onClick={e => e.stopPropagation()}>
+                                <h2 className="text-3xl font-bold mb-6 text-center">כניסת מנהל</h2>
+                                
+                                {!isLoggedIn ? (
+                                    <div className="space-y-6 flex flex-col items-center">
+                                        <input 
+                                            type="password" 
+                                            placeholder="קוד גישה (1234)"
+                                            value={adminPassInput}
+                                            onChange={(e) => setAdminPassInput(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleAdminLogin()}
+                                            className="w-full p-4 border-2 border-[#070543] rounded-xl text-2xl outline-none text-center"
+                                            autoFocus
+                                        />
+                                        <div className="flex gap-4 w-full">
+                                            <button onClick={handleAdminLogin} className="bg-[#070543] text-white flex-1 py-4 rounded-xl text-xl font-bold">כניסה</button>
+                                            <button onClick={() => setShowAdminModal(false)} className="bg-gray-100 text-gray-600 flex-1 py-4 rounded-xl text-xl font-bold">ביטול</button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-8 text-center flex flex-col items-center">
+                                        <p className="text-2xl text-green-600 font-bold">התחברת בהצלחה!</p>
+                                        <button 
+                                            onClick={() => window.open(GOOGLE_SHEET_URL, '_blank')}
+                                            className="block bg-green-600 text-white w-full py-6 rounded-2xl text-3xl font-black shadow-lg hover:bg-green-700 transition-all"
+                                        >
+                                            📊 פתח גיליון נתונים
+                                        </button>
+                                        <button onClick={() => {setShowAdminModal(false); setIsLoggedIn(false);}} className="text-xl underline text-gray-400">יציאה</button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
