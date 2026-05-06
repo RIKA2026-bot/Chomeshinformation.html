@@ -105,8 +105,14 @@
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s;
+            justify-content: flex-start;
         }
         .channel-grid label:hover { background-color: #f1f5f9; }
+        .channel-grid input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-4 md:p-14 text-right" dir="rtl">
@@ -162,7 +168,7 @@
 
             <!-- Step 1: Details -->
             <div id="step1" class="step">
-                <h2 class="text-4xl font-bold mb-12 border-b-4 border-navy pb-4">חלק ראשון: פרטי זהות</h2>
+                <h2 class="text-4xl font-bold mb-12 border-b-4 border-navy pb-4 text-center">חלק ראשון: פרטי זהות</h2>
                 <div class="space-y-10">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                         <div class="space-y-4">
@@ -214,7 +220,7 @@
             </div>
 
             <!-- Step 2: Files -->
-            <div id="step2" class="step">
+            <div id="step2" class="step text-center">
                 <h2 class="text-4xl font-bold mb-12 border-b-4 border-navy pb-4">חלק שני: איסוף מסמכים</h2>
                 <div class="space-y-14">
                     <div class="file-box">
@@ -242,7 +248,7 @@
                         <p class="text-2xl leading-relaxed text-center">צוות תוכנית החומש יעבור על המידע ויחזור אליך במידת הצורך.</p>
                         
                         <div class="pt-8 space-y-6">
-                            <p class="font-bold text-3xl">לידיעתכם:</p>
+                            <p class="font-bold text-3xl underline decoration-light-blue decoration-4">לידיעתכם:</p>
                             <ul class="list-none space-y-6 text-xl">
                                 <li class="flex items-start gap-4">› המידע אודות התוכנית יעלה לפורטל תוכניות החומש.</li>
                                 <li class="flex items-start gap-4">› מסמך העלויות יועבר לאישור מטה משרד החינוך.</li>
@@ -290,7 +296,6 @@
     </footer>
 
     <script>
-        // הכתובת החדשה והמעודכנת של הפריסה שלך
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxslv33hyT9oYgvcDA7NJX0YkXR5_qA629dqjRSG1tnvwPSTGq6-QsmaAek8QXJ1dX/exec"; 
 
         function nextStep(s, p) {
@@ -330,13 +335,16 @@
                 const infoFiles = await Promise.all(Array.from(document.getElementById('f_info').files).map(fileToBase64));
                 const costFiles = await Promise.all(Array.from(document.getElementById('f_costs').files).map(fileToBase64));
 
+                // איסוף הערך שנבחר בלחצני הרדיו (ערוץ ההתקשרות)
+                const channelVal = document.querySelector('input[name="channel"]:checked')?.value || 'לא נבחר';
+
                 const data = {
                     date: new Date().toLocaleString('he-IL'),
                     senderName: sName,
                     senderEmail: document.getElementById('s_email').value,
                     programName: pName,
                     supplierName: document.getElementById('sup_name').value,
-                    channel: document.querySelector('input[name="channel"]:checked')?.value || 'לא צוין',
+                    channel: channelVal,
                     contactName: document.getElementById('c_name').value,
                     contactPhone: document.getElementById('c_phone').value,
                     contactEmail: document.getElementById('c_email').value,
