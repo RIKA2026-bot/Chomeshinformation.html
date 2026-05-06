@@ -96,22 +96,28 @@
             text-align: center;
         }
 
+        /* עיצוב כפתורי הבחירה */
         .channel-grid label {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 15px;
+            gap: 12px;
+            padding: 18px;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s;
             justify-content: flex-start;
+            background: white;
         }
-        .channel-grid label:hover { background-color: #f1f5f9; }
-        .channel-grid input {
-            width: 20px;
-            height: 20px;
+        .channel-grid label:hover { 
+            background-color: #f8fafc;
+            border-color: var(--navy);
+        }
+        .channel-grid input[type="radio"] {
+            width: 24px;
+            height: 24px;
             cursor: pointer;
+            accent-color: var(--navy);
         }
     </style>
 </head>
@@ -296,6 +302,7 @@
     </footer>
 
     <script>
+        // הקישור שסיפקת מוטמע כאן
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxslv33hyT9oYgvcDA7NJX0YkXR5_qA629dqjRSG1tnvwPSTGq6-QsmaAek8QXJ1dX/exec"; 
 
         function nextStep(s, p) {
@@ -307,8 +314,10 @@
 
         function toggleModal(m) {
             const el = document.getElementById(m);
-            el.classList.toggle('hidden');
-            el.classList.toggle('flex');
+            if(el) {
+                el.classList.toggle('hidden');
+                el.classList.toggle('flex');
+            }
         }
 
         const fileToBase64 = (file) => new Promise((resolve, reject) => {
@@ -324,7 +333,7 @@
             const pName = document.getElementById('p_name').value;
 
             if (!sName || !pName) {
-                alert("נא למלא את כל שדות החובה לפני השליחה.");
+                alert("נא למלא את כל שדות החובה לפני השליחה (שם מלא ושם תוכנית).");
                 return;
             }
 
@@ -336,7 +345,8 @@
                 const costFiles = await Promise.all(Array.from(document.getElementById('f_costs').files).map(fileToBase64));
 
                 // איסוף הערך שנבחר בלחצני הרדיו (ערוץ ההתקשרות)
-                const channelVal = document.querySelector('input[name="channel"]:checked')?.value || 'לא נבחר';
+                const channelChecked = document.querySelector('input[name="channel"]:checked');
+                const channelVal = channelChecked ? channelChecked.value : 'לא נבחר';
 
                 const data = {
                     date: new Date().toLocaleString('he-IL'),
@@ -370,7 +380,8 @@
         }
 
         function adminEntry() {
-            if (prompt("קוד מנהל:") === "1234") {
+            const pass = prompt("קוד מנהל:");
+            if (pass === "1234") {
                 window.open("https://docs.google.com/spreadsheets/d/1dLYWAtJUYO0FtMhTZnjYiEAxlFbKkrbPqq-BuU3FkZk/edit?usp=drivesdk", "_blank");
             }
         }
