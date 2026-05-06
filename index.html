@@ -124,7 +124,7 @@
 <body class="min-h-screen flex flex-col items-center p-4 md:p-14 text-right" dir="rtl">
 
     <header class="w-full max-w-5xl flex flex-col items-center mb-16">
-        <img src="לוגו שקוף מחוז.png" alt="לוגו" class="max-w-[350px] h-auto mb-10">
+        <img src="לוגו שקוף מחוז.png" alt="לוגו משרד החינוך" class="max-w-[350px] h-auto mb-10">
         <div class="text-center">
             <h1 class="text-5xl md:text-6xl font-bold mb-6 text-[#070543]">תוכנית החומש לחינוך במזרח ירושלים</h1>
             <p class="text-3xl md:text-4xl text-gray-500 font-semibold tracking-tight">איסוף מידע ומסמכים לאישור תוכניות החומש לתשפ"ז</p>
@@ -136,7 +136,7 @@
         <div id="userFlow">
             <div class="progress-bar"><div id="progressFill" class="progress-fill" style="width: 25%;"></div></div>
 
-            <!-- Step 0: Landing -->
+            <!-- שלב 0: דף נחיתה -->
             <div id="step0" class="step active">
                 <div class="text-center space-y-10 leading-relaxed">
                     <div class="space-y-6">
@@ -172,7 +172,7 @@
                 </div>
             </div>
 
-            <!-- Step 1: Details -->
+            <!-- שלב 1: פרטים -->
             <div id="step1" class="step">
                 <h2 class="text-4xl font-bold mb-12 border-b-4 border-navy pb-4 text-center">חלק ראשון: פרטי זהות</h2>
                 <div class="space-y-10">
@@ -225,16 +225,18 @@
                 </div>
             </div>
 
-            <!-- Step 2: Files -->
+            <!-- שלב 2: העלאת מסמכים -->
             <div id="step2" class="step text-center">
                 <h2 class="text-4xl font-bold mb-12 border-b-4 border-navy pb-4">חלק שני: איסוף מסמכים</h2>
                 <div class="space-y-14">
                     <div class="file-box">
                         <h3 class="text-2xl font-bold mb-4">1. אודות התוכנית (Word)</h3>
+                        <p class="mb-6 text-slate-500">העלה דף מידע על התוכנית (לפי התבנית בעמוד הבית)</p>
                         <input type="file" id="f_info" class="input-field bg-white" multiple>
                     </div>
                     <div class="file-box">
                         <h3 class="text-2xl font-bold mb-4">2. פירוט עלויות (אקסל)</h3>
+                        <p class="mb-6 text-slate-500">העלה את מסמך פירוט העלויות של התוכנית (אקסל)</p>
                         <input type="file" id="f_costs" class="input-field bg-white" multiple>
                     </div>
                     <div class="flex justify-center pt-20">
@@ -243,7 +245,7 @@
                 </div>
             </div>
 
-            <!-- Step 3: Success -->
+            <!-- שלב 3: הודעת הצלחה -->
             <div id="step3" class="step">
                 <div class="text-center space-y-12 py-20">
                     <div class="text-9xl animate-bounce">✅</div>
@@ -269,7 +271,7 @@
         </div>
     </main>
 
-    <!-- Modals -->
+    <!-- מודאלים להסברים -->
     <div id="modalInfo" class="fixed inset-0 bg-navy/80 hidden items-center justify-center z-50 p-8 backdrop-blur-md">
         <div class="bg-white p-14 rounded-3xl max-w-3xl w-full text-right shadow-2xl">
             <h2 class="text-4xl font-bold mb-8 text-center">דף מידע על תוכנית</h2>
@@ -302,13 +304,14 @@
     </footer>
 
     <script>
-        // הקישור שסיפקת מוטמע כאן
+        // הכתובת של הפריסה שלך ב-Google Script
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxslv33hyT9oYgvcDA7NJX0YkXR5_qA629dqjRSG1tnvwPSTGq6-QsmaAek8QXJ1dX/exec"; 
 
         function nextStep(s, p) {
             document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
             document.getElementById('step' + s).classList.add('active');
-            document.getElementById('progressFill').style.width = p + '%';
+            const fill = document.getElementById('progressFill');
+            if(fill) fill.style.width = p + '%';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
