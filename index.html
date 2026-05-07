@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>איסוף מידע - תוכנית החומש לחינוך במזרח ירושלים</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -21,7 +21,10 @@
             padding: 0;
             font-size: 22px;
         }
-        h1, h2, h3, h4, .title-no-underline { text-decoration: none !important; }
+        h1, h2, h3, h4 { 
+            text-align: center;
+            text-decoration: none !important;
+        }
         
         .btn-primary {
             background-color: var(--navy);
@@ -95,15 +98,21 @@
         .channel-grid label {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 15px;
+            gap: 12px;
+            padding: 18px;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s;
+            background: white;
+            justify-content: flex-start;
         }
-        .channel-grid label:hover { background-color: #f1f5f9; }
-        .channel-grid input:checked + span { font-weight: bold; }
+        .channel-grid label:hover { background-color: #f8fafc; border-color: var(--navy); }
+        .channel-grid input[type="radio"] {
+            width: 24px;
+            height: 24px;
+            accent-color: var(--navy);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-4 md:p-14 text-right" dir="rtl">
@@ -112,7 +121,7 @@
         <img src="לוגו שקוף מחוז.png" alt="לוגו משרד החינוך" class="max-w-[350px] h-auto mb-10">
         <div class="text-center">
             <h1 class="text-5xl md:text-6xl font-bold mb-6 text-[#070543]">תוכנית החומש לחינוך במזרח ירושלים</h1>
-            <p class="text-3xl md:text-4xl text-gray-500 font-semibold tracking-tight text-center">איסוף מידע ומסמכים - תשפ"ז</p>
+            <p class="text-3xl md:text-4xl text-gray-500 font-semibold tracking-tight">איסוף מידע ומסמכים - תשפ"ז</p>
         </div>
     </header>
 
@@ -126,25 +135,27 @@
                 <div class="text-center space-y-10 leading-relaxed">
                     <div class="space-y-6">
                         <p class="font-bold text-3xl text-navy">שותפים יקרים,</p>
-                        <p class="text-2xl">לקראת הגשת תוכנית העבודה של החומש לשנה"ל תשפ"ז אנו נדרשים להעביר למטה משרד החינוך את כל המידע על תוכנית החומש שיופעלו בשנה הבאה.</p>
-                        <p class="text-2xl">לפניכם כלי לאסוף את המידע והמסמכים הנדרשים לצורך בחינתם ואישורם בתוכנית העבודה לתשפ"ז.</p>
+                        <p class="text-2xl text-center">אנו לקראת הגשת תוכנית החומש לתשפ"ז למטה משרד החינוך. לצורך אישור התוכניות והמענים שיפעלו בתשפ"ז, אנו נדרשים להעביר למטה משרד החינוך מידע ופירוט עלויות של כל תוכנית.</p>
+                        <p class="text-2xl text-center">לפניכם כלי לאסוף המידע והמסמכים הנדרשים לצורך בחינתם ואישורם בתוכנית העבודה לתשפ"ז.</p>
                     </div>
                     
-                    <p class="highlight-magenta text-center text-4xl py-10 border-y-4 border-magenta/10 my-12 bg-magenta/5 rounded-xl">יש למלא את הטופס כולל העלאת המסמכים עד לתאריך 12.5.26.</p>
+                    <p class="highlight-magenta text-center text-4xl py-10 border-y-4 border-magenta/10 my-12 bg-magenta/5 rounded-xl leading-tight">
+                        יש למלא את הטופס כולל העלאת המסמכים <br /> עד לתאריך 14.5.26.
+                    </p>
                     
-                    <h3 class="font-bold text-3xl pt-6 text-center">להלן הסבר על המסמכים הנדרשים:</h3>
+                    <h3 class="font-bold text-3xl pt-6">להלן הסבר על המסמכים הנדרשים:</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pt-8">
-                        <button onclick="toggleModal('modalInfo')" class="btn-outline flex flex-col items-center gap-6 py-14 hover:bg-slate-50 transition-all group">
-                            <span class="text-6xl group-hover:scale-110 transition-transform">📝</span>
+                        <button onclick="toggleModal('modalInfo')" class="btn-outline flex flex-col items-center gap-6 py-14 hover:bg-slate-50 transition-all">
+                            <span class="text-6xl">📝</span>
                             <span class="text-xl">דף מידע על תוכנית</span>
                         </button>
-                        <button onclick="toggleModal('modalCosts')" class="btn-outline flex flex-col items-center gap-6 py-14 hover:bg-slate-50 transition-all group">
-                            <span class="text-6xl group-hover:scale-110 transition-transform">📊</span>
+                        <button onclick="toggleModal('modalCosts')" class="btn-outline flex flex-col items-center gap-6 py-14 hover:bg-slate-50 transition-all">
+                            <span class="text-6xl">📊</span>
                             <span class="text-xl">מסמך פירוט עלויות</span>
                         </button>
-                        <button onclick="toggleModal('modalYearly')" class="btn-outline flex flex-col items-center gap-6 py-14 hover:bg-slate-50 transition-all group">
-                            <span class="text-6xl group-hover:scale-110 transition-transform">📅</span>
+                        <button onclick="toggleModal('modalYearly')" class="btn-outline flex flex-col items-center gap-6 py-14 hover:bg-slate-50 transition-all">
+                            <span class="text-6xl">📅</span>
                             <span class="text-xl">תוכנית עבודה שנתית</span>
                         </button>
                     </div>
@@ -161,19 +172,19 @@
                 <div class="space-y-10">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                         <div class="space-y-4">
-                            <label class="block font-bold">שם ממלא הטופס:</label>
+                            <label class="block font-bold text-center">שם ממלא הטופס:</label>
                             <input type="text" id="s_name" class="input-field" placeholder="הקלד שם מלא">
                         </div>
                         <div class="space-y-4">
-                            <label class="block font-bold">מייל לחזרה:</label>
+                            <label class="block font-bold text-center">מייל לחזרה:</label>
                             <input type="email" id="s_email" class="input-field" placeholder="example@domain.com">
                         </div>
                         <div class="space-y-4">
-                            <label class="block font-bold">שם התוכנית / המענה:</label>
+                            <label class="block font-bold text-center">שם התוכנית / המענה:</label>
                             <input type="text" id="p_name" class="input-field" placeholder="כפי שמופיע באפיון">
                         </div>
                         <div class="space-y-4">
-                            <label class="block font-bold">שם הספק / הארגון:</label>
+                            <label class="block font-bold text-center">שם הספק / הארגון:</label>
                             <input type="text" id="sup_name" class="input-field" placeholder="שם הספק">
                         </div>
                     </div>
@@ -212,26 +223,15 @@
             <div id="step2" class="step text-center">
                 <h2 class="text-4xl font-bold mb-12 border-b-4 border-navy pb-4">חלק שני: איסוף מסמכים</h2>
                 <div class="space-y-14">
-                    
                     <div class="file-box">
-                        <h3 class="text-2xl font-bold mb-4">1. אודות התוכנית</h3>
-                        <p class="mb-6 text-slate-500">העלה דף מידע על התוכנית (לפי התבנית בעמוד הבית)</p>
-                        <div id="fileArea1"><input type="file" id="f_info" class="input-field bg-white" multiple></div>
+                        <h3 class="text-2xl font-bold mb-4">1. אודות התוכנית (Word)</h3>
+                        <input type="file" id="f_info" class="input-field bg-white" multiple>
                     </div>
-
                     <div class="file-box">
-                        <h3 class="text-2xl font-bold mb-4">2. פירוט עלויות</h3>
-                        <p class="mb-6 text-slate-500">העלה את מסמך פירוט העלויות של התוכנית (אקסל)</p>
-                        <div id="fileArea2"><input type="file" id="f_costs" class="input-field bg-white" multiple></div>
+                        <h3 class="text-2xl font-bold mb-4">2. פירוט עלויות (אקסל)</h3>
+                        <input type="file" id="f_costs" class="input-field bg-white" multiple>
                     </div>
-
-                    <div class="p-10 border-4 border-dashed border-magenta/30 rounded-2xl bg-magenta/5">
-                        <h3 class="text-3xl font-bold mb-4 highlight-magenta">3. תוכנית עבודה שנתית / לו"ז</h3>
-                        <p class="mb-6 text-magenta text-xl font-bold italic text-center">שימו לב: כרגע לא רלוונטי — יידרש בהמשך. ניתן לדלג על שלב זה.</p>
-                    </div>
-
-                    <div class="flex justify-between pt-20">
-                        <button onclick="nextStep(1, 50)" class="btn-outline">חזרה</button>
+                    <div class="flex justify-center pt-20">
                         <button id="finalSubmitBtn" onclick="handleFinalSubmit()" class="btn-primary">שלח הגשה סופית</button>
                     </div>
                 </div>
@@ -245,21 +245,16 @@
                     
                     <div class="text-right space-y-10 max-w-3xl mx-auto bg-slate-50 p-12 rounded-3xl shadow-inner border-r-[12px] border-navy">
                         <p class="text-3xl font-bold text-center">הפרטים והמסמכים שמילאת התקבלו בהצלחה.</p>
-                        <p class="text-2xl leading-relaxed text-center">צוות תוכנית החומש יעבור על המידע ויחזור אליך במידת הצורך בכתובת המייל שציינת.</p>
+                        <p class="text-2xl leading-relaxed text-center">צוות תוכנית החומש יעבור על המידע ויחזור אליך במידת הצורך.</p>
                         
                         <div class="pt-8 space-y-6">
                             <p class="font-bold text-3xl underline decoration-light-blue decoration-4">לידיעתכם:</p>
                             <ul class="list-none space-y-6 text-xl">
-                                <li class="flex items-start gap-4"><span class="text-navy text-2xl font-bold">›</span> המידע אודות התוכנית יעלה לפורטל תוכניות החומש.</li>
-                                <li class="flex items-start gap-4"><span class="text-navy text-2xl font-bold">›</span> מסמך העלויות יועבר לאישור מטה משרד החינוך.</li>
-                                <li class="flex items-start gap-4"><span class="text-navy text-2xl font-bold">›</span> תוכניות העבודה ולוחות הזמנים יועברו לצורכי בקרה.</li>
+                                <li class="flex items-start gap-4">› המידע אודות התוכנית יעלה לפורטל תוכניות החומש.</li>
+                                <li class="flex items-start gap-4">› מסמך העלויות יועבר לאישור מטה משרד החינוך.</li>
+                                <li class="flex items-start gap-4">› תוכניות העבודה יועברו לצורכי בקרה.</li>
                             </ul>
                         </div>
-                    </div>
-
-                    <div class="pt-16 text-4xl font-bold leading-normal text-center">
-                        בברכה,<br>צוות החומש<br>
-                        <span class="text-2xl font-medium opacity-60">מחוז העיר ירושלים — משרד החינוך</span>
                     </div>
                     <button onclick="location.reload()" class="btn-outline mt-16 px-16 py-6 text-2xl">חזרה לעמוד הראשי</button>
                 </div>
@@ -289,7 +284,7 @@
     <div id="modalYearly" class="fixed inset-0 bg-navy/80 hidden items-center justify-center z-50 p-8 backdrop-blur-md">
         <div class="bg-white p-14 rounded-3xl max-w-3xl w-full text-right shadow-2xl">
             <h2 class="text-4xl font-bold mb-8 text-center text-magenta">תוכנית עבודה שנתית</h2>
-            <p class="text-2xl mb-10 leading-relaxed italic text-center font-medium">לידיעתכם: תבנית ללו"ז שנתי תפורסם ותידרש רק לאחר קבלת אישור סופי לתוכן ולתקציב התוכנית.</p>
+            <p class="text-2xl mb-10 leading-relaxed italic text-center font-medium">תבנית ללו"ז שנתי תפורסם לאחר קבלת אישור סופי לתוכן ולתקציב התוכנית.</p>
             <button onclick="toggleModal('modalYearly')" class="btn-outline w-full py-6 border-magenta text-magenta text-xl">סגור חלון</button>
         </div>
     </div>
@@ -300,39 +295,38 @@
     </footer>
 
     <script>
-        // כתובת ה-URL החדשה של ה-Google Script שהתקבלה מהפריסה
+        // כתובת ה-URL של הפריסה שלך בגוגל (Web App URL)
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3PQ-l2WwtgQQdpzxJyt9-tLnlUtYbqvNbIvM8pKtCaoR1f3TNZBh7vYYagM9uTpHI/exec"; 
 
         function nextStep(s, p) {
             document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
             document.getElementById('step' + s).classList.add('active');
-            document.getElementById('progressFill').style.width = p + '%';
+            const fill = document.getElementById('progressFill');
+            if(fill) fill.style.width = p + '%';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function toggleModal(m) {
             const el = document.getElementById(m);
-            el.classList.toggle('hidden');
-            el.classList.toggle('flex');
+            if(el) {
+                el.classList.toggle('hidden');
+                el.classList.toggle('flex');
+            }
         }
 
         const fileToBase64 = (file) => new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
-            reader.onload = () => resolve({
-                name: file.name,
-                mimeType: file.type,
-                data: reader.result.split(',')[1]
-            });
+            reader.onload = () => resolve({ name: file.name, mimeType: file.type, data: reader.result.split(',')[1] });
             reader.onerror = error => reject(error);
         });
 
         async function handleFinalSubmit() {
             const btn = document.getElementById('finalSubmitBtn');
-            const senderName = document.getElementById('s_name').value;
-            const programName = document.getElementById('p_name').value;
+            const sName = document.getElementById('s_name').value;
+            const pName = document.getElementById('p_name').value;
 
-            if (!senderName || !programName) {
+            if (!sName || !pName) {
                 alert("נא למלא את כל שדות החובה לפני השליחה (שם ושם תוכנית).");
                 return;
             }
@@ -344,13 +338,16 @@
                 const infoFiles = await Promise.all(Array.from(document.getElementById('f_info').files).map(fileToBase64));
                 const costFiles = await Promise.all(Array.from(document.getElementById('f_costs').files).map(fileToBase64));
 
+                const channelChecked = document.querySelector('input[name="channel"]:checked');
+                const channelVal = channelChecked ? channelChecked.value : 'לא נבחר';
+
                 const data = {
                     date: new Date().toLocaleString('he-IL'),
-                    senderName: senderName,
+                    senderName: sName,
                     senderEmail: document.getElementById('s_email').value,
-                    programName: programName,
+                    programName: pName,
                     supplierName: document.getElementById('sup_name').value,
-                    channel: document.querySelector('input[name="channel"]:checked')?.value || 'לא צוין',
+                    channel: channelVal,
                     contactName: document.getElementById('c_name').value,
                     contactPhone: document.getElementById('c_phone').value,
                     contactEmail: document.getElementById('c_email').value,
@@ -362,21 +359,20 @@
                     method: 'POST',
                     mode: 'no-cors',
                     cache: 'no-cache',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
 
                 nextStep(3, 100);
             } catch (error) {
                 console.error(error);
-                alert("חלה שגיאה בתקשורת. ודאו שהסקריפט בגוגל מוגדר לגישת Anyone.");
+                alert("חלה שגיאה בשליחה.");
                 btn.disabled = false;
                 btn.innerText = "שלח הגשה סופית";
             }
         }
 
         function adminEntry() {
-            if (prompt("קוד מנהל מערכת:") === "1234") {
+            if (prompt("קוד מנהל:") === "1234") {
                 window.open("https://docs.google.com/spreadsheets/d/1dLYWAtJUYO0FtMhTZnjYiEAxlFbKkrbPqq-BuU3FkZk/edit?usp=drivesdk", "_blank");
             }
         }
